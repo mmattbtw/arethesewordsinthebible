@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, SerializeFrom } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,8 +6,25 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import { Analytics } from "@vercel/analytics/react";
+
+export const loader = () => {
+  return {
+    ENV: {
+      VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID,
+    },
+  };
+};
+
+// Optional:
+// If you're not already handling TS support for environment variables
+declare global {
+  interface Window {
+    ENV: SerializeFrom<typeof loader>["ENV"];
+  }
+}
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -27,6 +44,8 @@ export const meta: MetaFunction = () => ({
 });
 
 export default function App() {
+  const { ENV } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -44,6 +63,11 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(ENV)}`,
+          }}
+        />
       </body>
     </html>
   );
