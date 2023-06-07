@@ -44,6 +44,7 @@ export default function Index() {
       }}
     >
       <h1>ARE THESE WORDS IN THE BIBLE?</h1>
+      <p>made by <a href="https://twitter.com/mmatt">@mmatt</a></p>
 
       <Form method="post">
         <label>
